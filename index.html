@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TS GSM TECHNOLOGIE - بطاقة عمل رقمية</title>
+    <!-- Font Awesome للأيقونات -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts (خط كايرو الاحترافي) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- مكتبة QRCode.js لتوليد كود الاستجابة السريعة -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <style>
+        :root {
+            --primary-color: #007bff;
+            --secondary-color: #00d2ff;
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .card-container {
+            background: var(--card-bg);
+            width: 100%;
+            max-width: 400px;
+            border-radius: 24px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+            overflow: hidden;
+            text-align: center;
+            position: relative;
+        }
+
+        /* الجزء العلوي للبطاقة */
+        .card-header {
+            background: linear-gradient(45deg, #1e3c72, #2a5298);
+            height: 120px;
+            position: relative;
+        }
+
+        .logo-container {
+            width: 110px;
+            height: 110px;
+            background: #fff;
+            border-radius: 50%;
+            position: absolute;
+            bottom: -55px;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.15);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            border: 4px solid #fff;
+        }
+
+        .logo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* محتوى البطاقة */
+        .card-body {
+            padding: 70px 25px 25px 25px;
+        }
+
+        .company-name {
+            font-size: 22px;
+            font-weight: 700;
+            color: #1e3c72;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: #777;
+            margin-bottom: 25px;
+        }
+
+        /* أزرار الإجراءات الرئيسية */
+        .action-buttons {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .action-btn {
+            background: #f0f4f8;
+            border: none;
+            padding: 12px 5px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: #1e3c72;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .action-btn i {
+            font-size: 18px;
+        }
+
+        .action-btn:hover {
+            background: #1e3c72;
+            color: #fff;
+            transform: translateY(-3px);
+        }
+
+        /* روابط التواصل الاجتماعي والـ GPS */
+        .links-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .link-item {
+            display: flex;
+            align-items: center;
+            padding: 14px 20px;
+            border-radius: 15px;
+            text-decoration: none;
+            color: #fff;
+            font-weight: 600;
+            transition: transform 0.2s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .link-item:hover {
+            transform: scale(1.02);
+        }
+
+        .link-item i {
+            font-size: 20px;
+            margin-left: 15px;
+        }
+
+        .link-item span {
+            font-size: 15px;
+            margin-right: auto;
+        }
+
+        /* ألوان مخصصة لكل منصة */
+        .btn-facebook { background: #1877F2; }
+        .btn-tiktok { background: #000000; }
+        .btn-whatsapp { background: #25D366; }
+        .btn-gps { background: #ea4335; }
+
+        /* منطقة الـ QR Code */
+        .qr-section {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 15px;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 15px;
+            border: 1px dashed #ccc;
+        }
+
+        #qrcode img {
+            margin: 0 auto;
+        }
+
+        .close-qr {
+            font-size: 12px;
+            color: #999;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card-container">
+    <!-- الهيدر واللوقو المشرط أعلى البطاقة -->
+    <div class="card-header">
+        <div class="logo-container">
+            <img src="logo.png" alt="Logo" onerror="this.src='https://via.placeholder.com/150?text=LOGO'">
+        </div>
+    </div>
+
+    <div class="card-body">
+        <h1 class="company-name">TS GSM TECHNOLOGIE</h1>
+        <p class="subtitle">خدمات تكنولوجيا الاتصالات والهواتف</p>
+
+        <!-- أزرار الخدمات الذكية (حفظ، مشاركة، QR) -->
+        <div class="action-buttons">
+            <a href="#" class="action-btn" id="saveContact">
+                <i class="fas fa-user-plus"></i>
+                <span>حفظ الاتصال</span>
+            </a>
+            <button class="action-btn" id="shareBtn">
+                <i class="fas fa-share-alt"></i>
+                <span>مشاركه مباشرة</span>
+            </button>
+            <button class="action-btn" id="toggleQr">
+                <i class="fas fa-qrcode"></i>
+                <span>رمز QR</span>
+            </button>
+        </div>
+
+        <!-- منطقة ظهور الـ QR Code عند الضغط على الزر -->
+        <div class="qr-section" id="qrContainer">
+            <div id="qrcode"></div>
+            <span class="close-qr" id="closeQr">إغلاق الرمز</span>
+        </div>
+
+        <hr style="border: 0; height: 1px; background: #eee; margin: 20px 0;">
+
+        <!-- روابط الاتصال والتواصل الاجتماعي -->
+        <div class="links-container">
+            <!-- الاتصال الهاتفي -->
+            <a href="tel:00213797099620" class="link-item" style="background: #343a40;">
+                <i class="fas fa-phone-alt"></i>
+                <span>اتصال هاتفي</span>
+            </a>
+
+            <!-- واتساب -->
+            <a href="https://wa.me/213797099620" target="_blank" class="link-item btn-whatsapp">
+                <i class="fab fa-whatsapp"></i>
+                <span>راسلنا على واتساب</span>
+            </a>
+
+            <!-- فيسبوك -->
+            <a href="https://web.facebook.com/profile.php?id=100091442307147&locale=fr_FR" target="_blank" class="link-item btn-facebook">
+                <i class="fab fa-facebook-f"></i>
+                <span>تابعنا على فيسبوك</span>
+            </a>
+
+            <!-- تيك توك -->
+            <a href="https://www.tiktok.com/@tsgsmtechnologie" target="_blank" class="link-item btn-tiktok">
+                <i class="fab fa-tiktok"></i>
+                <span>تابعنا على تيك توك</span>
+            </a>
+
+            <!-- الموقع الجغرافي GPS -->
+            <a href="https://maps.app.goo.gl/sfsmyAi7kYdb2PVj9" target="_blank" class="link-item btn-gps">
+                <i class="fas fa-map-marker-alt"></i>
+                <span>موقعنا على الخريطة (GPS)</span>
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+    const contactData = {
+        name: "TS GSM TECHNOLOGIE",
+        phone: "+213797099620",
+        whatsapp: "+213797099620",
+        facebook: "https://web.facebook.com/profile.php?id=100091442307147",
+        tiktok: "https://www.tiktok.com/@tsgsmtechnologie",
+        url: window.location.href
+    };
+
+    // 1. خاصية حفظ جهة الاتصال (توليد ملف vCard تلقائياً)
+    document.getElementById('saveContact').addEventListener('click', function(e) {
+        e.preventDefault();
+        const vcard = "BEGIN:VCARD\n" +
+                      "VERSION:3.0\n" +
+                      "FN:" + contactData.name + "\n" +
+                      "TEL;TYPE=CELL,VOICE:" + contactData.phone + "\n" +
+                      "X-SOCIALPROFILE;TYPE=facebook:" + contactData.facebook + "\n" +
+                      "X-SOCIALPROFILE;TYPE=tiktok:" + contactData.tiktok + "\n" +
+                      "END:VCARD";
+        
+        const blob = new Blob([vcard], { type: "text/vcard" });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.setAttribute('href', url);
+        a.setAttribute('download', contactData.name + '.vcf');
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    });
+
+    // 2. خاصية المشاركة المباشرة (باستخدام نظام الهاتف الذكي Native Share)
+    document.getElementById('shareBtn').addEventListener('click', async () => {
+        if (navigator.share) {
+            try {
+                await navigator.share({
+                    title: contactData.name,
+                    text: 'تفضل بزيارة بطاقة الأعمال الإلكترونية الخاصة بنا:',
+                    url: contactData.url
+                });
+            } catch (err) {
+                console.log("تم إلغاء المشاركة أو حدث خطأ");
+            }
+        } else {
+            // حل بديل في حال كان المتصفح لا يدعم المشاركة المباشرة (نسخ الرابط)
+            navigator.clipboard.writeText(contactData.url);
+            alert("تم نسخ رابط البطاقة بنجاح لمشاركته!");
+        }
+    });
+
+    // 3. خاصية الـ QR Code (توليد الرمز ديناميكياً بناءً على رابط البطاقة الحالي)
+    const qrContainer = document.getElementById('qrContainer');
+    const qrcode = new QRCode(document.getElementById("qrcode"), {
+        text: contactData.url,
+        width: 150,
+        height: 150,
+        colorDark : "#000000",
+        colorLight : "#ffffff",
+        correctLevel : QRCode.CorrectLevel.H
+    });
+
+    document.getElementById('toggleQr').addEventListener('click', () => {
+        qrContainer.style.display = (qrContainer.style.display === 'flex') ? 'none' : 'flex';
+    });
+    
+    document.getElementById('closeQr').addEventListener('click', () => {
+        qrContainer.style.display = 'none';
+    });
+</script>
+
+</body>
+</html>
