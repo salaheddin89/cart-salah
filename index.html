@@ -167,6 +167,7 @@
         }
 
         /* ألوان مخصصة لكل منصة */
+        .btn-website { background: linear-gradient(45deg, #00c6ff, #0072ff); }
         .btn-facebook { background: #1877F2; }
         .btn-tiktok { background: #000000; }
         .btn-whatsapp { background: #25D366; }
@@ -201,7 +202,7 @@
 <body>
 
 <div class="card-container">
-    <!-- الهيدر واللوقو المشرط أعلى البطاقة -->
+    <!-- الهيدر واللوقو أعلى البطاقة -->
     <div class="card-header">
         <div class="logo-container">
             <img src="logo.png" alt="Logo" onerror="this.src='https://via.placeholder.com/150?text=LOGO'">
@@ -210,7 +211,7 @@
 
     <div class="card-body">
         <h1 class="company-name">TS GSM TECHNOLOGIE</h1>
-        <p class="subtitle">خدمات تكنولوجيا الاتصالات والهواتف</p>
+        <p class="subtitle">مركز التدريب وصيانة الهواتف والكمبيوتر الاحترافي</p>
 
         <!-- أزرار الخدمات الذكية (حفظ، مشاركة، QR) -->
         <div class="action-buttons">
@@ -220,7 +221,7 @@
             </a>
             <button class="action-btn" id="shareBtn">
                 <i class="fas fa-share-alt"></i>
-                <span>مشاركه مباشرة</span>
+                <span>مشاركة مباشرة</span>
             </button>
             <button class="action-btn" id="toggleQr">
                 <i class="fas fa-qrcode"></i>
@@ -236,12 +237,19 @@
 
         <hr style="border: 0; height: 1px; background: #eee; margin: 20px 0;">
 
-        <!-- روابط الاتصال والتواصل الاجتماعي -->
+        <!-- روابط الاتصال والتواصل الاجتماعي والموقع -->
         <div class="links-container">
-            <!-- الاتصال الهاتفي -->
+            
+            <!-- الموقع الإلكتروني الرسمي للمركز الجديد -->
+            <a href="https://ts-gsm.dz/" target="_blank" class="link-item btn-website">
+                <i class="fas fa-globe"></i>
+                <span>الموقع الإلكتروني الرسمي</span>
+            </a>
+
+            <!-- اتصال هاتفي -->
             <a href="tel:00213797099620" class="link-item" style="background: #343a40;">
                 <i class="fas fa-phone-alt"></i>
-                <span>اتصال هاتفي</span>
+                <span>اتصال هاتفي مباَشر</span>
             </a>
 
             <!-- واتساب -->
@@ -276,18 +284,20 @@
         name: "TS GSM TECHNOLOGIE",
         phone: "+213797099620",
         whatsapp: "+213797099620",
+        website: "https://ts-gsm.dz/",
         facebook: "https://web.facebook.com/profile.php?id=100091442307147",
         tiktok: "https://www.tiktok.com/@tsgsmtechnologie",
         url: window.location.href
     };
 
-    // 1. خاصية حفظ جهة الاتصال (توليد ملف vCard تلقائياً)
+    // 1. خاصية حفظ جهة الاتصال (vCard)
     document.getElementById('saveContact').addEventListener('click', function(e) {
         e.preventDefault();
         const vcard = "BEGIN:VCARD\n" +
                       "VERSION:3.0\n" +
                       "FN:" + contactData.name + "\n" +
                       "TEL;TYPE=CELL,VOICE:" + contactData.phone + "\n" +
+                      "URL:" + contactData.website + "\n" +
                       "X-SOCIALPROFILE;TYPE=facebook:" + contactData.facebook + "\n" +
                       "X-SOCIALPROFILE;TYPE=tiktok:" + contactData.tiktok + "\n" +
                       "END:VCARD";
@@ -302,7 +312,7 @@
         document.body.removeChild(a);
     });
 
-    // 2. خاصية المشاركة المباشرة (باستخدام نظام الهاتف الذكي Native Share)
+    // 2. خاصية المشاركة المباشرة 
     document.getElementById('shareBtn').addEventListener('click', async () => {
         if (navigator.share) {
             try {
@@ -312,16 +322,15 @@
                     url: contactData.url
                 });
             } catch (err) {
-                console.log("تم إلغاء المشاركة أو حدث خطأ");
+                console.log("تم إلغاء المشاركة");
             }
         } else {
-            // حل بديل في حال كان المتصفح لا يدعم المشاركة المباشرة (نسخ الرابط)
             navigator.clipboard.writeText(contactData.url);
             alert("تم نسخ رابط البطاقة بنجاح لمشاركته!");
         }
     });
 
-    // 3. خاصية الـ QR Code (توليد الرمز ديناميكياً بناءً على رابط البطاقة الحالي)
+    // 3. خاصية الـ QR Code ديناميكياً
     const qrContainer = document.getElementById('qrContainer');
     const qrcode = new QRCode(document.getElementById("qrcode"), {
         text: contactData.url,
